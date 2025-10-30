@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4 text-center">📬 لیست تیکت‌ها</h3>
+
+    {% if tickets %}
+        <div class="list-group">
+            {% for t in tickets %}
+                {% if t.is_closed %}
+                    <a href="{% url 'ticket_detail' t.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center disabled" style="background-color: #f8f9fa; color: #6c757d;">
+                        <span>
+                            <i class="bi bi-lock"></i> {{ t.subject }}
+                        </span>
+                        <span class="badge bg-secondary">بسته شده</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'ticket_detail' t.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi bi-chat-dots"></i> {{ t.subject }}
+                        </span>
+                        <span class="badge bg-success">باز</span>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center mt-4">
+            هنوز تیکتی ثبت نشده است.
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'create_ticket' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> ایجاد تیکت جدید
+        </a>
+    </div>
+</div>
+{% endblock %}

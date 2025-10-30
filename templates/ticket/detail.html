@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-start mt-5">
+    <div class="card shadow-sm border-0 w-75">
+
+        <!-- تیکت اصلی -->
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">{{ ticket.subject }}</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">{{ ticket.message }}</p>
+            <p class="text-muted mb-0">
+                <small>توسط {{ ticket.user.username }} در {{ ticket.created_at|date:"Y/m/d H:i" }}</small>
+            </p>
+        </div>
+
+        <!-- پاسخ‌ها -->
+        {% if replies %}
+            <div class="card-body border-top">
+                <h5 class="mb-3 text-primary">پاسخ‌ها</h5>
+
+                {% for r in replies %}
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <!-- 👇 بخش جدید: اطلاعات کاربر پاسخ‌دهنده -->
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" 
+                                 style="width: 35px; height: 35px; font-weight: bold;">
+                                {{ r.user.username|first|upper }}
+                            </div>
+                            <div class="ms-2">
+                                <strong>{{ r.user.username }}</strong>
+                                {% if r.user.is_staff %}
+                                    <span class="badge bg-success ms-1">ادمین</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- متن پاسخ -->
+                        <p class="mb-2">{{ r.message }}</p>
+                        <p class="text-muted mb-0">
+                            <small>ارسال‌شده در {{ r.date_sent|date:"Y/m/d H:i" }}</small>
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-body border-top">
+                <p class="text-muted">هنوز پاسخی برای این تیکت ثبت نشده است.</p>
+            </div>
+        {% endif %}
+
+        <!-- فرم پاسخ ادمین -->
+        {% if not ticket.is_closed %}
+                <div class="card-body border-top">
+                    <h5 class="mb-3 text-success">ارسال پاسخ جدید</h5>
+                    <form action="" method="post" class="mb-3">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="btn btn-success px-4">ثبت پاسخ</button>
+                        <a href="{% url 'tickets' %}" class="btn btn-outline-secondary px-3">بازگشت</a>
+                    </form>
+                </div>
+        {% else %}
+            <div class="card-footer bg-light text-center">
+                <p class="text-danger fw-semibold mb-0">این تیکت بسته شده است.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}پروفایل کاربر{% endblock title %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: linear-gradient(135deg, #e0e7ff, #f5f3ff);
+        min-height: 100vh;
+    }
+
+    .profile-container {
+        max-width: 700px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+    }
+
+    .profile-pic {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-pic img {
+        width: 160px;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #dee2e6;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #e0e7ff;
+        color: #1d1b6e;
+        font-weight: 600;
+    }
+
+    .btn-custom {
+        background-color: #4c6ef5;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .btn-custom:hover {
+        background-color: #364fc7;
+    }
+</style>
+
+<div class="container profile-container">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info text-center">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="profile-pic">
+        {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="عکس پروفایل">
+        {% else %}
+            <img src="{% static 'default images/default.jpg' %}" alt="عکس پروفایل پیش‌فرض">
+        {% endif %}
+    </div>
+
+    <h1>پروفایل من</h1>
+    <hr>
+    <p class="text-center fw-semibold">{{ user.username }} خوش اومدی 👋</p>
+
+    <!-- آکاردئون Bootstrap -->
+    <div class="accordion mt-4" id="profileAccordion">
+        <!-- نوشتن پست جدید -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPost">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePost">
+                    📝 نوشتن پست جدید
+                </button>
+            </h2>
+            <div id="collapsePost" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                <div class="accordion-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" name="submit-post" class="btn btn-custom w-100 mt-2">ارسال</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- پست‌های من -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPosts">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePosts">
+                    📚 پست‌های من
+                </button>
+            </h2>
+            <div id="collapsePosts" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                <div class="accordion-body">
+                    {% if posts %}
+                        <ul class="list-group list-group-flush">
+                            {% for post in posts %}
+                                <li class="list-group-item">
+                                    {% if post.slug %}
+                                        <a href="{% url 'post_detail' post.slug %}" class="text-decoration-none">{{ post.title }}</a>
+                                    {% else %}
+                                        <a href="{% url 'post_detail' post.id %}" class="text-decoration-none">{{ post.title }}</a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">هنوز پستی ارسال نکرده‌اید.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- تغییر نام کاربری -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingUsername">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsername">
+                    ✏️ تغییر نام کاربری
+                </button>
+            </h2>
+            <div id="collapseUsername" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                <div class="accordion-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">نام کاربری جدید</label>
+                            <input type="text" name="new-username" class="form-control">
+                        </div>
+                        <button type="submit" name="change-username" class="btn btn-custom w-100">تغییر</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- تغییر رمز عبور -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPassword">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword">
+                    🔒 تغییر رمز عبور
+                </button>
+            </h2>
+            <div id="collapsePassword" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                <div class="accordion-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">رمز قدیمی</label>
+                            <input type="password" class="form-control" name="old_password">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">رمز جدید</label>
+                            <input type="password" class="form-control" name="new_password1">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تکرار رمز جدید</label>
+                            <input type="password" class="form-control" name="new_password2">
+                        </div>
+                        <button type="submit" name="submit_change_password" class="btn btn-custom w-100">تغییر رمز</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock content %}

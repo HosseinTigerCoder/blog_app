@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <!-- بدنه اصلی -->
+    <main>
+
+        <!-- بخش کارت‌ها -->
+        <section class="blog-section">
+        <h2>آخرین مقالات</h2>
+        <div class="blog-cards">
+            {% for post in posts %}
+                <div class="card">
+                {% if post.cover_image %}
+                    <img src="{{ post.cover_image.url }}" alt="پست اول">
+                {% endif %}
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.text|truncatewords:35 }}</p>
+                <a href="{% url 'post_detail' post.slug %}" class="btn">مشاهده جزئیات</a>
+                </div>
+            {% endfor %}
+
+        </div>
+        </section>
+
+    </main>
+    <!-- ====== Hero Section End ====== -->
+
+{% endblock content %}
+
+</html>    

@@ -1,0 +1,67 @@
+.blog-section {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.blog-section h2 {
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+.blog-cards {
+  display: flex;
+  flex-direction: column; /* کارت‌ها زیر هم قرار بگیرند */
+  align-items: center;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%; /* کارت‌ها بیشتر عرض صفحه رو بگیرند */
+  max-width: 700px; /* محدودیت برای مانیتورهای بزرگ */
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  height: 300px;         /* ارتفاع ثابت */
+  object-fit: cover;     /* تصویر وسط و بدون تغییر نسبت */
+  border-radius: 8px;
+}
+
+.card h3 {
+  margin: 15px 0 10px;
+  font-size: 20px;
+}
+
+.card p {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  text-align: right;
+}
+
+.card .btn {
+  display: inline-block;
+  background: #0d6efd;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.card .btn:hover {
+  background: #0a58ca;
+}
+
+

@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            direction: rtl;
+            text-align: right;
+            font-family: tahoma, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    {% block subject %}ثبت‌نام موفق{% endblock %}
+
+    {% block html_body %}
+    <h2>سلام {{ username }} 🎉</h2>
+    <p>ایمیل شما: {{ email }}</p>
+    <p>ثبت‌ نام شما با موفقیت انجام شد.</p>
+    {% endblock %}
+</body>
+</html>

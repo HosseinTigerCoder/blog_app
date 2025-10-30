@@ -1,0 +1,116 @@
+/* پست اصلی */
+.post-detail {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.post-cover-img {
+    width: 100% !important;
+    max-height: 400px !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    margin-bottom: 15px !important;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.author-img {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* کامنت‌ها */
+.comments-section h3 {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.comment-box {
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.comment-user-img {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+.comment-user {
+    font-weight: 600;
+    color: #333;
+}
+
+.comment-date {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.reply-btn {
+    background: none !important;
+    border: none !important;
+    color: #0d6efd !important;
+    cursor: pointer !important;
+    font-size: 0.9rem !important;
+}
+
+.reply-btn:hover {
+    text-decoration: underline !important;
+}
+
+.reply-form {
+    margin-right: 20px;
+}
+
+.reply-box {
+    background: #eef2f7;
+    border-left: 3px solid #0d6efd;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+.reply-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.reply-user-img {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+.reply-user {
+    font-weight: 600;
+    color: #333;
+}
+
+.reply-date {
+    font-size: 0.8rem;
+    color: #666;
+}

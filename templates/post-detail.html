@@ -1,0 +1,207 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <style>
+        /* کارت پست */
+        .post-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        /* تصویر پست فیت */
+        .post-cover-img {
+            width: 100%;
+            height: 400px; /* ارتفاع ثابت */
+            object-fit: cover; /* تصویر بدون کشیدگی پر شود */
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* اطلاعات نویسنده */
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* کارت کامنت */
+        .comment-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .comment-header, .reply-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .comment-user-img, .reply-user-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .reply-btn {
+            background: none;
+            border: none;
+            color: #0d6efd;
+            cursor: pointer;
+            padding: 0;
+        }
+        .reply-btn:hover {
+            text-decoration: underline;
+        }
+        .reply-form {
+            margin-right: 20px;
+            display: none;
+        }
+        .reply-card {
+            background: #eef2f7;
+            border-left: 3px solid #0d6efd;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container my-5">
+
+    <!-- کارت پست -->
+    <div class="post-card">
+        {% if post.cover_image %}
+            <img src="{{ post.cover_image.url }}" class="post-cover-img" alt="{{ post.title }}">
+        {% endif %}
+        <h1 class="mb-3">{{ post.title }}</h1>
+        <p>{{ post.text }}</p>
+
+        <div class="author-info">
+            {% if post.author.photo %}
+                <img src="{{ post.author.photo.url }}" class="author-img" alt="عکس نویسنده">
+            {% else %}
+                <img src="{% static 'default images/default.jpg' %}" class="author-img" alt="عکس پیش فرض">
+            {% endif %}
+            <span>ایجاد شده توسط {{ post.author }}</span>
+        </div>
+
+        <form method="post" action="{% url 'liked_post' post.slug %}" class="mb-3">
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+                {% if user in post.likes.all %}
+                    <button type="submit" class="btn btn-danger">❤️ لغو لایک {{ post.count_likes }}</button>
+                {% else %}
+                    <button type="submit" class="btn btn-outline-danger">🤍 لایک {{ post.count_likes }}</button>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary">برای لایک وارد شوید</a>
+            {% endif %}
+        </form>
+
+        <a href="{% url 'home' %}" class="btn btn-outline-primary">بازگشت</a>
+    </div>
+
+    <!-- فرم ثبت نظر -->
+    <div class="card p-3 mb-4">
+        {% if user.is_authenticated %}
+            <h4>ثبت نظر جدید</h4>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">ثبت نظر</button>
+            </form>
+        {% else %}
+            <p>برای ثبت نظر باید وارد شوید</p>
+        {% endif %}
+    </div>
+
+    <!-- نمایش کامنت‌ها -->
+    <div class="comments-section">
+        <h3 class="mb-3">نظرات کاربران</h3>
+        {% for comment in comments %}
+            <div class="comment-card">
+                <div class="comment-header">
+                    {% if comment.user.photo %}
+                        <img src="{{ comment.user.photo.url }}" class="comment-user-img" alt="عکس کاربر">
+                    {% else %}
+                        <img src="{% static 'default images/default.jpg' %}" class="comment-user-img" alt="عکس پیش فرض">
+                    {% endif %}
+                    <span class="fw-bold">{{ comment.user }}</span>
+                    <span class="text-muted small">{{ comment.date_created|date:"Y/m/d H:i" }}</span>
+                </div>
+
+                <p>{{ comment.text }}</p>
+
+                {% if user.is_authenticated %}
+                    <button class="reply-btn" data-comment-id="{{ comment.id }}">پاسخ</button>
+                {% endif %}
+
+                <div class="reply-form" id="reply-form-{{ comment.id }}">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <button type="submit" class="btn btn-primary btn-sm">ارسال پاسخ</button>
+                    </form>
+                </div>
+
+                {% for reply in comment.get_all_replies %}
+                    <div class="reply-card">
+                        <div class="reply-header">
+                            {% if reply.user.photo %}
+                                <img src="{{ reply.user.photo.url }}" class="reply-user-img" alt="عکس کاربر">
+                            {% else %}
+                                <img src="{% static 'default images/default.jpg' %}" class="reply-user-img" alt="عکس پیش فرض">
+                            {% endif %}
+                            <span class="fw-bold">{{ reply.user }}</span>
+                            <span class="text-muted small">{{ reply.date_created|date:"Y/m/d H:i" }}</span>
+                        </div>
+                        <p>{{ reply.text }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% empty %}
+            <p>هنوز نظری ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.reply-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const form = document.getElementById('reply-form-' + this.dataset.commentId);
+        if(form.style.display === 'none' || form.style.display === '') {
+            document.querySelectorAll('.reply-form').forEach(f => f.style.display = 'none');
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    });
+});
+</script>
+
+</body>
+</html>

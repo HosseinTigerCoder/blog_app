@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm border-0" style="width: 500px;">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">ایجاد تیکت جدید</h4>
+        </div>
+
+        <div class="card-body">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-success px-4">ثبت تیکت</button>
+                    <a href="{% url 'tickets' %}" class="btn btn-outline-secondary px-3">بازگشت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

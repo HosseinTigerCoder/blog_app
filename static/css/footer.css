@@ -1,0 +1,166 @@
+/* ====== Footer CSS ====== */
+@import url("https://v1.fontapi.ir/css/Vazir");
+
+.site-footer {
+  font-family: "Vazir", sans-serif;
+  background: linear-gradient(180deg, hsl(217, 60%, 34%), hsl(217, 60%, 28%));
+  color: #f3f6fb;
+  padding: 40px 6%;
+  box-sizing: border-box;
+}
+
+/* بالای فوتر: ستون‌ها */
+.footer-top {
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* هر ستون */
+.footer-col {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+/* لوگو و توضیح */
+.footer-logo {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.footer-desc {
+  margin: 0 0 12px 0;
+  color: rgba(243, 246, 251, 0.85);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* عناوین ستون‌ها */
+.footer-col h4 {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+}
+
+/* لینک‌ها */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-links li {
+  margin-bottom: 8px;
+}
+.footer-links a {
+  color: rgba(243, 246, 251, 0.9);
+  text-decoration: none;
+  font-size: 14px;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.footer-links a:hover {
+  color: #fff;
+  transform: translateX(-4px);
+}
+
+/* فرم خبرنامه */
+.newsletter {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.newsletter input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+.newsletter button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s ease;
+}
+.newsletter button:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* آیکون‌های شبکه اجتماعی */
+.socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.socials a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-3px);
+}
+
+/* پایین فوتر: کپی‌رایت و لینک‌ها */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 28px;
+  padding-top: 16px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-bottom p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(243, 246, 251, 0.8);
+}
+.bottom-links {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+.bottom-links a {
+  color: rgba(243, 246, 251, 0.8);
+  text-decoration: none;
+  font-size: 13px;
+}
+.bottom-links a:hover {
+  color: #fff;
+  transform: translateX(-3px);
+}
+
+/* واکنش‌گرایی */
+@media (max-width: 820px) {
+  .footer-top {
+    gap: 16px;
+  }
+  .newsletter {
+    flex-direction: column;
+  }
+  .newsletter button {
+    width: 100%;
+  }
+  .footer-bottom {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

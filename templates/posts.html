@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه اصلی</title>
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search-form.css' %}">
+</head>
+<body>
+
+{% block content %}
+    <!-- بدنه اصلی -->
+    <main>
+        <!-- 🔹 فرم جستجو -->
+        <form method="get" id="search-form" class="search-form">
+            <input type="text" name="search-box" id="search-box" value="{{ search_query }}" placeholder="جستجو...">
+            <button type="submit">جستجو</button>
+        </form>
+
+        <!-- بخش کارت‌ها -->
+        <section class="blog-section">
+            <h2>همه مقالات</h2>
+            <div class="blog-cards">
+                {% for post in page_obj %}
+                    <div class="card">
+                        {% if post.cover_image %}
+                            <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                        {% endif %}
+                        <h3>{{ post.title }}</h3>
+                        <p>{{ post.text|truncatewords:35 }}</p>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn">مشاهده جزئیات</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+    <!-- ====== Hero Section End ====== -->
+
+    <!-- لینک‌های صفحه‌بندی -->
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">اولین</a>
+            <a href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+        {% endif %}
+
+        <span>صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">بعدی</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">آخرین</a>
+        {% endif %}
+    </div>
+
+    <!-- <script>
+        const searchBox = document.getElementById('search-box');
+        const form = document.getElementById('search-form');
+
+        // وقتی کاربر باکس رو خالی کنه، صفحه اصلی نمایش داده بشه
+        searchBox.addEventListener('input', () => {
+            if (searchBox.value.trim() === '') {
+            // رفتن به صفحه بدون پارامتر سرچ
+            window.location.href = window.location.pathname;
+            searchBox.focus()
+            }
+        });
+    </script> -->
+{% endblock content %}
+</body>
+</html>
