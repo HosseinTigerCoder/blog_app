@@ -13,6 +13,7 @@ ENV/
 .venv/
 .env/
 
+
 # Django
 *.sqlite3
 db.sqlite3
@@ -28,7 +29,7 @@ db.sqlite3
 !*/migrations/__init__.py
 
 # Static & Media Files
-/static/
+/static
 /media/
 # اگر تصاویر آپلود شده داخل media هستند، پوشه media را نادیده بگیر
 
