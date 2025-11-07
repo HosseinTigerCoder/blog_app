@@ -179,6 +179,25 @@
                 </div>
             </div>
         </div>
+        <!-- تغییر  عکس پروفایل -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingProfileImage">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfileImage">
+                    📷 تغییر عکس پروفایل
+                </button>
+            </h2>
+            <div id="collapseProfileImage" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                <div class="accordion-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ profile_image.as_p }}
+                            <button type="submit" name="set-profile-image">تایید</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

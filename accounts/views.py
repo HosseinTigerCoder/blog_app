@@ -15,7 +15,7 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from templated_mail.mail import BaseEmailMessage
 from .models import Ticket,Reply
-from .forms import TicketForm,ReplyForm
+from .forms import TicketForm,ReplyForm,ProfileImage
 
 User = get_user_model()
 
@@ -87,6 +87,13 @@ def profile_page(request):
                 post.save()
                 messages.success(request,'پست شما ذخیره شد.')
                 return redirect('profile')
+        elif 'set-profile-image' in request.POST:
+            user = request.user
+            profile_image = ProfileImage(request.POST,request.FILES,instance=user)
+            if profile_image.is_valid():
+                profile_image.save()
+                messages.success(request,'عکس پروفایل با موفقیت تغییر کرد.')
+                return redirect('profile')
         else:
             new_username = request.POST.get('new-username')
             user = request.user
@@ -104,9 +111,10 @@ def profile_page(request):
             messages.success(request, 'نام کاربری با موفقیت تغییر کرد.')
             return redirect('profile')  # مسیر دلخواه (مثلاً صفحه پروفایل)
     form = CreatePost()
-            
+    profile_image = ProfileImage()        
 
     context = {
+        'profile_image': profile_image,
         'posts': queryset,
         'form': form,
     }

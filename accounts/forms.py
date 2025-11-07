@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from core.models import Post
-from .models import Contact,Ticket,Reply
+from .models import Contact,Ticket,Reply,CustomUser
 
 User = get_user_model()
 
@@ -57,4 +57,9 @@ class TicketForm(forms.ModelForm):
 class ReplyForm(forms.ModelForm):
     class Meta:
         model = Reply
-        fields = ['message']        
+        fields = ['message']
+
+class ProfileImage(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['photo']
