@@ -13,6 +13,7 @@ class Post(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(null=True,unique=True)
     likes = models.ManyToManyField(CustomUser,related_name='liked_posts',blank=True)
+    views = models.PositiveIntegerField(default=0)
 
     def count_likes(self):
         return self.likes.count()

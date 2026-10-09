@@ -1,7 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import login,logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegisterForm,CreatePost,PasswordResetForm,SetNewPasswordForm,ContactUsForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from core.models import Post
@@ -14,6 +13,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from templated_mail.mail import BaseEmailMessage
+from .forms import RegisterForm,CreatePost,PasswordResetForm,SetNewPasswordForm,ContactUsForm
 from .models import Ticket,Reply
 from .forms import TicketForm,ReplyForm,ProfileImage
 
@@ -47,9 +47,9 @@ def login_user(request):
             login(request, user)
             messages.success(request,'شما باموفقیت وارد شدید!')
             return redirect('home')
-    # else:
-        # form = AuthenticationForm()
-    return render(request, 'registration/login.html', {})
+    else:
+        form = AuthenticationForm()
+    return render(request, 'registration/login.html', {'form':form})
 
 def logout_user(request):
     logout(request)
@@ -177,7 +177,8 @@ def contact_us(request):
             return redirect('contact_us')
     else:
         return render(request,'registration/contact-us.html',{})
-    
+
+@login_required()
 def ticket_list(request):
     tickets = Ticket.objects.filter(user=request.user)
     return render(request,'ticket/ticket-list.html',{'tickets':tickets})

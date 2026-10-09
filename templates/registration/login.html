@@ -19,7 +19,12 @@
               {% endif %}
           {% endfor %}
       {% endif %}
-        
+       
+      {% if form.errors %}
+        <div style="color: firebrick;">
+            {{ form.non_field_errors }}
+        </div>
+      {% endif %}
       <form method="POST">
 
         {% csrf_token %}
@@ -27,7 +32,7 @@
         <div class="txt_field">
           <input type="text" required name="username">
           <span></span>
-          <label>Username</label>
+          <label>Email</label>
         </div>
 
         <div class="txt_field">

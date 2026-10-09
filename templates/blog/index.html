@@ -1,0 +1,131 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}آخرین مقالات | وبلاگ من{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="blog-page">
+
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="blog-message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="blog-layout">
+
+        <aside class="sidebar">
+            <div class="sidebar-title">
+                <span class="sidebar-icon">🔥</span>
+                <h3>مقالات پر بازدید</h3>
+            </div>
+
+            <div class="popular-list">
+                {% for post in popular_posts %}
+                    <article class="popular-article">
+                        <span class="popular-number">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+
+                        <div class="popular-info">
+                            <a href="{% url 'post_detail' post.slug %}">
+                                {{ post.title }}
+                            </a>
+
+                            <span class="popular-views">
+                                <span>◉</span>
+                                {{ post.views }} بازدید
+                            </span>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p class="empty-state">
+                        هنوز مقاله‌ای برای نمایش وجود ندارد.
+                    </p>
+                {% endfor %}
+            </div>
+
+            <div class="sidebar-note">
+                <span class="note-icon">✦</span>
+                <h4>با ما همراه باشید</h4>
+                <p>
+                    تازه‌ترین مطالب آموزشی و مقاله‌های کاربردی را دنبال کنید.
+                </p>
+            </div>
+        </aside>
+
+        <section class="blog-section">
+            <header class="section-header">
+                <div>
+                    <span class="section-eyebrow">مجله آموزشی</span>
+                    <h2>آخرین مقالات</h2>
+                </div>
+                <span class="section-count">
+                    {{ posts|length }} مقاله
+                </span>
+            </header>
+
+            <div class="blog-cards">
+                {% for post in posts %}
+                    <article class="blog-card">
+
+                        {% if post.cover_image %}
+                            <a
+                                href="{% url 'post_detail' post.slug %}"
+                                class="card-image"
+                            >
+                                <img
+                                    src="{{ post.cover_image.url }}"
+                                    alt="{{ post.title }}"
+                                    loading="lazy"
+                                >
+                            </a>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h3>
+                                <a href="{% url 'post_detail' post.slug %}">
+                                    {{ post.title }}
+                                </a>
+                            </h3>
+
+                            <p class="card-excerpt">
+                                {{ post.text|truncatewords:35 }}
+                            </p>
+
+                            <div class="card-footer">
+                                <a
+                                    href="{% url 'post_detail' post.slug %}"
+                                    class="read-more"
+                                >
+                                    ادامه مطلب
+                                    <span>←</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </article>
+                {% empty %}
+                    <div class="empty-posts">
+                        <span>✧</span>
+                        <h3>هنوز مقاله‌ای منتشر نشده!</h3>
+                        <p>به‌زودی مطالب جدیدی در این بخش قرار می‌گیرند.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    </main>
+</div>
+
+{% endblock content %}

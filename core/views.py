@@ -3,21 +3,19 @@ from django.contrib.auth.decorators import login_required
 from .models import Post,Comment
 from .forms import CommentForm
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.urls import reverse
 
 # Create your views here.
-# @api_view()
 def home_page(request):
     posts = Post.objects.order_by('-date_created')[:5]
-    return render(request,'index.html',{'posts':posts})
-    # queryset = Post.objects.all()
-    # serializer = PostSerializer(queryset,many=True)
-    # return Response(serializer.data)
+    popular_posts = Post.objects.order_by('-views')[:5]
+    return render(request,'blog/index.html',{'posts':posts,'popular_posts':popular_posts})
 
 def all_posts(request):
     search_query = request.GET.get('search-box','').strip()
     if search_query:
-        posts = Post.objects.filter(title__icontains=search_query).order_by('-date_created')
+        posts = Post.objects.filter(Q(title__icontains=search_query) | Q(text__icontains=search_query)).order_by('-date_created')
     else:
         posts = Post.objects.all().order_by('-date_created')
         
@@ -29,12 +27,15 @@ def all_posts(request):
 
     if not search_query:
         search_query = ''
-    return render(request,'posts.html',{'page_obj':page_obj,'search_query':search_query})
+    return render(request,'blog/posts.html',{'page_obj':page_obj,'search_query':search_query})
 
 @login_required(login_url='login')
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.filter(parent_id=None,confirm=True).order_by('-date_created')
+
+    post.views += 1
+    post.save(update_fields=['views'])
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -66,7 +67,7 @@ def post_detail(request, slug):
         'form': form,
         'comments': comments
     }
-    return render(request, 'post-detail.html', context)
+    return render(request, 'blog/post-detail.html', context)
 
 def like_post(request,slug):
     if request.method == 'POST':
