@@ -3,12 +3,12 @@ from django.contrib.auth.decorators import login_required
 from .models import Post,Comment
 from .forms import CommentForm
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q,F
 from django.urls import reverse
 
 # Create your views here.
 def home_page(request):
-    posts = Post.objects.order_by('-date_created')[:5]
+    posts = Post.objects.order_by('-date_created')[:6]
     popular_posts = Post.objects.order_by('-views')[:5]
     return render(request,'blog/index.html',{'posts':posts,'popular_posts':popular_posts})
 
@@ -34,8 +34,14 @@ def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.filter(parent_id=None,confirm=True).order_by('-date_created')
 
-    post.views += 1
-    post.save(update_fields=['views'])
+    session_key = f'viewed_post_{post.pk}'
+
+    if not request.session.get(session_key):
+        Post.objects.filter(pk=post.pk).update(views=F('views') + 1)
+        request.session[session_key] = True
+        post.refresh_from_db(fields=['views'])
+    # post.views += 1
+    # post.save(update_fields=['views'])
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
