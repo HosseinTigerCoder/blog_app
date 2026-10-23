@@ -1,124 +1,287 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}{{ post.title }}{% endblock title %}
 
-{% block title %}{{ post.title }}{% endblock %}
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/post-detail.css' %}">
+{% endblock extra_css %}
 
 {% block content %}
 
-<div class="container my-5">
+<div class="post-detail-page">
 
-    <!-- کارت پست -->
-    <div class="post-card">
-        {% if post.cover_image %}
-            <img src="{{ post.cover_image.url }}" class="post-cover-img" alt="{{ post.title }}">
-        {% endif %}
-        <h1 class="mb-3">{{ post.title }}</h1>
-        <p>{{ post.text }}</p>
+    <div class="post-detail-container">
 
-        <div class="author-info">
-            {% if post.author.photo %}
-                <img src="{{ post.author.photo.url }}" class="author-img" alt="عکس نویسنده">
-            {% else %}
-                <img src="{% static 'default images/default.jpg' %}" class="author-img" alt="عکس پیش فرض">
-            {% endif %}
-            <span>ایجاد شده توسط {{ post.author }}</span>
-        </div>
+        <!-- مسیر بازگشت -->
+        <nav class="post-breadcrumb" aria-label="مسیر صفحه">
+            <a href="{% url 'home' %}">صفحه اصلی</a>
+            <span>←</span>
+            <span class="breadcrumb-current">مطالب وبلاگ</span>
+        </nav>
 
-        <form method="post" action="{% url 'liked_post' post.slug %}" class="mb-3">
-            {% csrf_token %}
-            {% if user.is_authenticated %}
-                {% if user in post.likes.all %}
-                    <button type="submit" class="btn btn-danger">❤️ لغو لایک {{ post.count_likes }}</button>
-                {% else %}
-                    <button type="submit" class="btn btn-outline-danger">🤍 لایک {{ post.count_likes }}</button>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline-secondary">برای لایک وارد شوید</a>
-            {% endif %}
-        </form>
+        <!-- مقاله اصلی -->
+        <article class="post-article">
 
-        <a href="{% url 'home' %}" class="btn btn-outline-primary">بازگشت</a>
-    </div>
-
-    <!-- فرم ثبت نظر -->
-    <div class="card p-3 mb-4">
-        {% if user.is_authenticated %}
-            <h4>ثبت نظر جدید</h4>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-success">ثبت نظر</button>
-            </form>
-        {% else %}
-            <p>برای ثبت نظر باید وارد شوید</p>
-        {% endif %}
-    </div>
-
-    <!-- نمایش کامنت‌ها -->
-    <div class="comments-section">
-        <h3 class="mb-3">نظرات کاربران</h3>
-        {% for comment in comments %}
-            <div class="comment-card">
-                <div class="comment-header">
-                    {% if comment.user.photo %}
-                        <img src="{{ comment.user.photo.url }}" class="comment-user-img" alt="عکس کاربر">
-                    {% else %}
-                        <img src="{% static 'default images/default.jpg' %}" class="comment-user-img" alt="عکس پیش فرض">
-                    {% endif %}
-                    <span class="fw-bold">{{ comment.user }}</span>
-                    <span class="text-muted small">{{ comment.date_created|date:"Y/m/d H:i" }}</span>
+            {% if post.cover_image %}
+                <div class="post-cover-wrapper">
+                    <img
+                        src="{{ post.cover_image.url }}"
+                        class="post-cover-img"
+                        alt="{{ post.title }}"
+                    >
+                    <div class="post-cover-overlay"></div>
                 </div>
+            {% endif %}
 
-                <p>{{ comment.text }}</p>
+            <div class="post-article-body">
 
-                {% if user.is_authenticated %}
-                    <button class="reply-btn" data-comment-id="{{ comment.id }}">پاسخ</button>
-                {% endif %}
+                <header class="post-header">
+                    <span class="post-category-label">
+                        <span class="category-dot"></span>
+                        مقاله وبلاگ
+                    </span>
 
-                <div class="reply-form" id="reply-form-{{ comment.id }}">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                        <button type="submit" class="btn btn-primary btn-sm">ارسال پاسخ</button>
-                    </form>
-                </div>
+                    <h1 class="post-title">{{ post.title }}</h1>
 
-                {% for reply in comment.get_all_replies %}
-                    <div class="reply-card">
-                        <div class="reply-header">
-                            {% if reply.user.photo %}
-                                <img src="{{ reply.user.photo.url }}" class="reply-user-img" alt="عکس کاربر">
+                    <div class="post-author-info">
+                        <div class="post-author-avatar">
+                            {% if post.author.photo %}
+                                <img
+                                    src="{{ post.author.photo.url }}"
+                                    alt="عکس {{ post.author }}"
+                                >
                             {% else %}
-                                <img src="{% static 'default images/default.jpg' %}" class="reply-user-img" alt="عکس پیش فرض">
+                                <img
+                                    src="{% static 'default images/default.jpg' %}"
+                                    alt="عکس پیش‌فرض نویسنده"
+                                >
                             {% endif %}
-                            <span class="fw-bold">{{ reply.user }}</span>
-                            <span class="text-muted small">{{ reply.date_created|date:"Y/m/d H:i" }}</span>
                         </div>
-                        <p>{{ reply.text }}</p>
-                    </div>
-                {% endfor %}
-            </div>
-        {% empty %}
-            <p>هنوز نظری ثبت نشده است.</p>
-        {% endfor %}
-    </div>
 
+                        <div class="post-author-details">
+                            <span class="author-label">نویسنده</span>
+                            <strong>{{ post.author }}</strong>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="post-divider"></div>
+
+                <!-- محتوای نوشته‌شده با Rich Text Editor -->
+                <div class="post-content rich-text-content">
+                    {{ post.text|safe }}
+                </div>
+
+                <!-- لایک و بازگشت -->
+                <footer class="post-actions">
+                    <form
+                        method="post"
+                        action="{% url 'liked_post' post.slug %}"
+                        class="post-like-form"
+                    >
+                        {% csrf_token %}
+
+                        {% if user.is_authenticated %}
+                            {% if user in post.likes.all %}
+                                <button type="submit" class="post-like-btn is-liked">
+                                    <span class="like-icon">♥</span>
+                                    <span>لغو لایک</span>
+                                    <span class="like-count">{{ post.count_likes }}</span>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="post-like-btn">
+                                    <span class="like-icon">♡</span>
+                                    <span>لایک کردن</span>
+                                    <span class="like-count">{{ post.count_likes }}</span>
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}" class="post-like-btn">
+                                <span class="like-icon">♡</span>
+                                <span>برای لایک وارد شوید</span>
+                            </a>
+                        {% endif %}
+                    </form>
+
+                    <a href="{% url 'home' %}" class="post-back-btn">
+                        <span>→</span>
+                        بازگشت به مقالات
+                    </a>
+                </footer>
+
+            </div>
+        </article>
+
+        <!-- بخش ثبت نظر -->
+        <section class="comment-form-card">
+            <div class="section-heading">
+                <div class="section-heading-icon">✎</div>
+                <div>
+                    <h2>گفت‌وگو را شروع کن</h2>
+                    <p>نظرت رو درباره این مقاله بنویس.</p>
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+                <form method="post" class="comment-form">
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button type="submit" class="comment-submit-btn">
+                        ثبت نظر
+                        <span>↗</span>
+                    </button>
+                </form>
+            {% else %}
+                <div class="login-to-comment">
+                    <p>برای ثبت نظر، ابتدا وارد حساب کاربری خودت شو.</p>
+                    <a href="{% url 'login' %}">ورود به حساب کاربری ←</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- نظرات کاربران -->
+        <section class="comments-section">
+
+            <div class="comments-section-heading">
+                <div>
+                    <span class="comments-eyebrow">نظرات و دیدگاه‌ها</span>
+                    <h2>صحبت‌های کاربران</h2>
+                </div>
+                <div class="comments-heading-icon">☰</div>
+            </div>
+
+            {% for comment in comments %}
+                <article class="comment-card">
+
+                    <header class="comment-header">
+                        <div class="comment-user-avatar">
+                            {% if comment.user.photo %}
+                                <img src="{{ comment.user.photo.url }}" alt="عکس {{ comment.user }}">
+                            {% else %}
+                                <img src="{% static 'default images/default.jpg' %}" alt="عکس پیش‌فرض کاربر">
+                            {% endif %}
+                        </div>
+
+                        <div class="comment-user-details">
+                            <strong>{{ comment.user }}</strong>
+                            <time>{{ comment.date_created|date:"Y/m/d H:i" }}</time>
+                        </div>
+                    </header>
+
+                    <div class="comment-text">
+                        {{ comment.text|linebreaksbr }}
+                    </div>
+
+                    {% if user.is_authenticated %}
+                        <button
+                            type="button"
+                            class="reply-btn"
+                            aria-expanded="false"
+                            aria-controls="reply-form-{{ comment.id }}"
+                            data-comment-id="{{ comment.id }}"
+                        >
+                            <span>↩</span>
+                            پاسخ به این نظر
+                        </button>
+                    {% endif %}
+
+                    <!-- فرم پاسخ -->
+                    <div class="reply-form" id="reply-form-{{ comment.id }}" hidden>
+                        {% if user.is_authenticated %}
+                            <form method="post" class="comment-form reply-comment-form">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+
+                                <input
+                                    type="hidden"
+                                    name="parent_id"
+                                    value="{{ comment.id }}"
+                                >
+
+                                <button type="submit" class="comment-submit-btn">
+                                    ارسال پاسخ
+                                    <span>↗</span>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                    <!-- پاسخ‌های ثبت‌شده -->
+                    {% for reply in comment.get_all_replies %}
+                        <article class="reply-card">
+
+                            <header class="comment-header">
+                                <div class="comment-user-avatar reply-avatar">
+                                    {% if reply.user.photo %}
+                                        <img src="{{ reply.user.photo.url }}" alt="عکس {{ reply.user }}">
+                                    {% else %}
+                                        <img src="{% static 'default images/default.jpg' %}" alt="عکس پیش‌فرض کاربر">
+                                    {% endif %}
+                                </div>
+
+                                <div class="comment-user-details">
+                                    <strong>{{ reply.user }}</strong>
+                                    <time>{{ reply.date_created|date:"Y/m/d H:i" }}</time>
+                                </div>
+
+                                <span class="reply-badge">پاسخ</span>
+                            </header>
+
+                            <div class="comment-text">
+                                {{ reply.text|linebreaksbr }}
+                            </div>
+
+                        </article>
+                    {% endfor %}
+
+                </article>
+
+            {% empty %}
+                <div class="comments-empty">
+                    <span class="empty-comments-icon">☁</span>
+                    <h3>هنوز نظری ثبت نشده</h3>
+                    <p>اولین نفر باش که دیدگاهش رو درباره این مقاله به اشتراک می‌ذاره.</p>
+                </div>
+            {% endfor %}
+
+        </section>
+
+    </div>
 </div>
 
 <script>
-document.querySelectorAll('.reply-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const form = document.getElementById('reply-form-' + this.dataset.commentId);
-        if(form.style.display === 'none' || form.style.display === '') {
-            document.querySelectorAll('.reply-form').forEach(f => f.style.display = 'none');
-            form.style.display = 'block';
-        } else {
-            form.style.display = 'none';
-        }
+document.addEventListener("DOMContentLoaded", function () {
+    const replyButtons = document.querySelectorAll(".reply-btn");
+
+    replyButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const commentId = this.dataset.commentId;
+            const targetForm = document.getElementById("reply-form-" + commentId);
+
+            if (!targetForm) return;
+
+            const isOpen = this.getAttribute("aria-expanded") === "true";
+
+            // بستن فرم‌های پاسخ دیگر
+            document.querySelectorAll(".reply-form").forEach(function (form) {
+                form.hidden = true;
+            });
+
+            replyButtons.forEach(function (otherButton) {
+                otherButton.setAttribute("aria-expanded", "false");
+            });
+
+            // باز کردن فرم انتخاب‌شده، اگر قبلاً بسته بوده
+            if (!isOpen) {
+                targetForm.hidden = false;
+                this.setAttribute("aria-expanded", "true");
+            }
+        });
     });
 });
 </script>
-{% endblock %}
+
+{% endblock content %}

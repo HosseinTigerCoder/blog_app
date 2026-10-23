@@ -7,6 +7,8 @@ name = "pypi"
 django = "*"
 django-templated-mail = "*"
 pillow = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

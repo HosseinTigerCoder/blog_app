@@ -1,0 +1,21 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}ورود و ثبت‌نام{% endblock title %}</title>
+
+    {# اگر فونت در base.html تعریف شده، لینک فونت را اینجا هم قرار بده #}
+    <link rel="stylesheet" href="{% static 'css/style-auth.css' %}">
+
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+<body class="auth-body">
+
+    {% block content %}{% endblock content %}
+
+</body>
+</html>

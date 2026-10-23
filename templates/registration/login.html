@@ -1,63 +1,104 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="../../static/css/style-login.css">
-  </head>
-  <body>
-    <div class="center">
-      <h1>Login</h1>
+{% extends 'base_auth.html' %}
+{% load static %}
 
-      {% if messages %}
-          {% for message in messages %}
-              {% if message.tags == 'error' %}
-                  <center><h4 style="color: firebrick;">{{message}}</h4></center>
-              {% else %}
-                  <center><h4 style="color: dodgerblue;">{{message}}</h4></center>
-              {% endif %}
-          {% endfor %}
-      {% endif %}
-       
-      {% if form.errors %}
-        <div style="color: firebrick;">
-            {{ form.non_field_errors }}
-        </div>
-      {% endif %}
-      <form method="POST">
+{% block title %}ورود به حساب | وبلاگ من{% endblock title %}
 
-        {% csrf_token %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style-login.css' %}">
+{% endblock extra_css %}
 
-        <div class="txt_field">
-          <input type="text" required name="username">
-          <span></span>
-          <label>Email</label>
-        </div>
+{% block content %}
+<div class="login-page">
+    <div class="login-decoration login-decoration-one"></div>
+    <div class="login-decoration login-decoration-two"></div>
 
-        <div class="txt_field">
-          <input type="password" required name="password">
-          <span></span>
-          <label>Password</label>
-        </div>
+    <main class="login-wrapper">
+        <section class="login-card">
 
-        <input type="submit" value="Login">
-        <div class="signup_link">
-          Not a member? <a href="{% url 'register' %}">Signup</a>
-          <p>Forgot your Password? <a href="{% url 'password_reset' %}">Reset Password</a></p> 
-        </div>
-      </form>
-    </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      document.querySelectorAll(".txt_field label").forEach(label => {
-        label.style.top = "-5px";
-        label.style.color = "#2691d9";
-        label.style.fontSize = "14px";
-      });
-      document.querySelectorAll(".txt_field span::before");
-    });
-  </script>
+            <div class="login-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                          stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M4.5 20a7.5 7.5 0 0 1 15 0"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </div>
 
-  </body>
-</html>
+            <h1 class="login-title">خوش برگشتی!</h1>
+            <p class="login-subtitle">
+                برای ورود به حساب کاربری خود، اطلاعاتت را وارد کن.
+            </p>
+
+            {% if messages %}
+                <div class="login-messages">
+                    {% for message in messages %}
+                        <div class="login-message {% if message.tags == 'error' %}message-error{% else %}message-success{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="login-message message-error">
+                    نام کاربری یا رمز عبور صحیح نیست. لطفاً دوباره تلاش کن.
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="login-form">
+                {% csrf_token %}
+
+                <div class="login-field">
+                    <label for="login-username">نام کاربری</label>
+                    <input
+                        type="text"
+                        id="login-username"
+                        name="username"
+                        placeholder="نام کاربری خود را وارد کن"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="login-field">
+                    <label for="login-password">رمز عبور</label>
+                    <input
+                        type="password"
+                        id="login-password"
+                        name="password"
+                        placeholder="رمز عبور خود را وارد کن"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <div class="login-options">
+                    <a href="{% url 'password_reset' %}" class="forgot-password">
+                        رمز عبورت را فراموش کردی؟
+                    </a>
+                </div>
+
+                <button type="submit" class="login-submit">
+                    ورود به حساب
+                    <span aria-hidden="true">←</span>
+                </button>
+            </form>
+
+            <div class="login-divider">
+                <span>هنوز عضو نشده‌ای؟</span>
+            </div>
+
+            <a href="{% url 'register' %}" class="signup-link">
+                ساخت حساب کاربری
+            </a>
+
+            <p class="login-footer-text">
+                خوشحالیم که دوباره اینجایی 💜
+            </p>
+
+        </section>
+    </main>
+</div>
+{% endblock content %}

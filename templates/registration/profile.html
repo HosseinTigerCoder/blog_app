@@ -3,205 +3,286 @@
 
 {% block title %}پروفایل کاربر{% endblock title %}
 
+{% block extra_css %}
+    {{ form.media }}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
-<style>
-    body {
-        background: linear-gradient(135deg, #e0e7ff, #f5f3ff);
-        min-height: 100vh;
-    }
-
-    .profile-container {
-        max-width: 700px;
-        margin: 50px auto;
-        background: #fff;
-        border-radius: 1rem;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-        padding: 2rem;
-    }
-
-    .profile-pic {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .profile-pic img {
-        width: 160px;
-        height: 160px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 4px solid #dee2e6;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    }
-
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-        font-weight: 600;
-        color: #333;
-    }
-
-    .accordion-button:not(.collapsed) {
-        background-color: #e0e7ff;
-        color: #1d1b6e;
-        font-weight: 600;
-    }
-
-    .btn-custom {
-        background-color: #4c6ef5;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
-
-    .btn-custom:hover {
-        background-color: #364fc7;
-    }
-</style>
-
-<div class="container profile-container">
+<div class="profile-page">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-info text-center">{{ message }}</div>
-        {% endfor %}
+        <div class="profile-messages">
+            {% for message in messages %}
+                <div class="profile-message {{ message.tags }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
-    <div class="profile-pic">
-        {% if user.photo %}
-            <img src="{{ user.photo.url }}" alt="عکس پروفایل">
-        {% else %}
-            <img src="{% static 'default images/default.jpg' %}" alt="عکس پروفایل پیش‌فرض">
-        {% endif %}
+    <div class="profile-wrapper">
+
+        <!-- کارت معرفی کاربر -->
+        <aside class="profile-summary">
+            <div class="profile-cover">
+                <span class="cover-orb cover-orb-one"></span>
+                <span class="cover-orb cover-orb-two"></span>
+            </div>
+
+            <div class="profile-avatar">
+                {% if user.photo %}
+                    <img src="{{ user.photo.url }}" alt="عکس پروفایل {{ user.username }}">
+                {% else %}
+                    <img src="{% static 'default images/default.jpg' %}" alt="عکس پروفایل پیش‌فرض">
+                {% endif %}
+            </div>
+
+            <div class="profile-summary-content">
+                <span class="profile-status">
+                    <span class="status-dot"></span>
+                    حساب کاربری شما
+                </span>
+
+                <h2>{{ user.username }}</h2>
+                <p class="profile-welcome">خوش اومدی! 👋</p>
+
+                <div class="profile-divider"></div>
+
+                <div class="profile-tip">
+                    <span class="tip-icon">✦</span>
+                    <p>ایده‌هات رو بنویس، تجربه‌هات رو به اشتراک بذار و مسیر رشدت رو ادامه بده.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- بخش اصلی پروفایل -->
+        <main class="profile-main">
+
+            <header class="profile-heading">
+                <div class="heading-icon">✦</div>
+                <div>
+                    <span class="eyebrow">حساب کاربری</span>
+                    <h1>پروفایل من</h1>
+                    <p>اطلاعات حساب و نوشته‌هات رو از اینجا مدیریت کن.</p>
+                </div>
+            </header>
+
+            <div class="profile-accordion">
+
+                <!-- نوشتن پست -->
+                <section class="profile-panel">
+                    <button class="profile-panel-toggle" type="button"
+                            aria-expanded="false" aria-controls="collapsePost"
+                            data-profile-toggle="collapsePost">
+                        <span class="panel-title">
+                            <span class="panel-icon">✎</span>
+                            <span>نوشتن پست جدید</span>
+                        </span>
+                        <span class="panel-chevron">⌄</span>
+                    </button>
+
+                    <div class="profile-panel-content" id="collapsePost" hidden>
+                        <div class="panel-inner">
+                            <p class="panel-description">ایده یا تجربه جدیدت رو با بقیه به اشتراک بذار.</p>
+
+                            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" name="submit-post" class="profile-submit">
+                                    <span>ارسال پست</span>
+                                    <span>↗</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- پست‌های کاربر -->
+                <section class="profile-panel">
+                    <button class="profile-panel-toggle" type="button"
+                            aria-expanded="false" aria-controls="collapsePosts"
+                            data-profile-toggle="collapsePosts">
+                        <span class="panel-title">
+                            <span class="panel-icon">▤</span>
+                            <span>پست‌های من</span>
+                        </span>
+                        <span class="panel-chevron">⌄</span>
+                    </button>
+
+                    <div class="profile-panel-content" id="collapsePosts" hidden>
+                        <div class="panel-inner">
+                            {% if posts %}
+                                <div class="my-posts-list">
+                                    {% for post in posts %}
+                                        <a class="my-post-item"
+                                           href="{% if post.slug %}{% url 'post_detail' post.slug %}{% else %}{% url 'post_detail' post.id %}{% endif %}">
+                                            <span class="post-item-icon">▤</span>
+                                            <span class="post-item-title">{{ post.title }}</span>
+                                            <span class="post-item-arrow">←</span>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="profile-empty">
+                                    <span class="empty-icon">✎</span>
+                                    <h3>هنوز پستی نداری</h3>
+                                    <p>اولین نوشته‌ات رو منتشر کن تا اینجا نمایش داده بشه.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- تغییر نام کاربری -->
+                <section class="profile-panel">
+                    <button class="profile-panel-toggle" type="button"
+                            aria-expanded="false" aria-controls="collapseUsername"
+                            data-profile-toggle="collapseUsername">
+                        <span class="panel-title">
+                            <span class="panel-icon">♙</span>
+                            <span>تغییر نام کاربری</span>
+                        </span>
+                        <span class="panel-chevron">⌄</span>
+                    </button>
+
+                    <div class="profile-panel-content" id="collapseUsername" hidden>
+                        <div class="panel-inner">
+                            <form method="POST" class="profile-form">
+                                {% csrf_token %}
+                                <div class="profile-field">
+                                    <label for="new-username">نام کاربری جدید</label>
+                                    <input id="new-username" type="text"
+                                           name="new-username"
+                                           placeholder="نام کاربری جدیدت رو وارد کن..."
+                                           autocomplete="username" required>
+                                </div>
+
+                                <button type="submit" name="change-username" class="profile-submit">
+                                    تغییر نام کاربری <span>←</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- تغییر رمز عبور -->
+                <section class="profile-panel">
+                    <button class="profile-panel-toggle" type="button"
+                            aria-expanded="false" aria-controls="collapsePassword"
+                            data-profile-toggle="collapsePassword">
+                        <span class="panel-title">
+                            <span class="panel-icon">⌑</span>
+                            <span>تغییر رمز عبور</span>
+                        </span>
+                        <span class="panel-chevron">⌄</span>
+                    </button>
+
+                    <div class="profile-panel-content" id="collapsePassword" hidden>
+                        <div class="panel-inner">
+                            <form method="POST" class="profile-form">
+                                {% csrf_token %}
+
+                                <div class="profile-field">
+                                    <label for="old-password">رمز عبور فعلی</label>
+                                    <input id="old-password" type="password"
+                                           name="old_password"
+                                           placeholder="رمز فعلی"
+                                           autocomplete="current-password" required>
+                                </div>
+
+                                <div class="profile-field">
+                                    <label for="new-password1">رمز عبور جدید</label>
+                                    <input id="new-password1" type="password"
+                                           name="new_password1"
+                                           placeholder="رمز جدید"
+                                           autocomplete="new-password" required>
+                                </div>
+
+                                <div class="profile-field">
+                                    <label for="new-password2">تکرار رمز جدید</label>
+                                    <input id="new-password2" type="password"
+                                           name="new_password2"
+                                           placeholder="تکرار رمز جدید"
+                                           autocomplete="new-password" required>
+                                </div>
+
+                                <button type="submit" name="submit_change_password" class="profile-submit">
+                                    تغییر رمز عبور <span>←</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- تغییر عکس پروفایل -->
+                <section class="profile-panel">
+                    <button class="profile-panel-toggle" type="button"
+                            aria-expanded="false" aria-controls="collapseProfileImage"
+                            data-profile-toggle="collapseProfileImage">
+                        <span class="panel-title">
+                            <span class="panel-icon">◎</span>
+                            <span>تغییر عکس پروفایل</span>
+                        </span>
+                        <span class="panel-chevron">⌄</span>
+                    </button>
+
+                    <div class="profile-panel-content" id="collapseProfileImage" hidden>
+                        <div class="panel-inner">
+                            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                                {% csrf_token %}
+
+                                <div class="profile-field profile-image-field">
+                                    <label>تصویر جدید</label>
+                                    {{ profile_image.as_p }}
+                                </div>
+
+                                <button type="submit" name="set-profile-image" class="profile-submit">
+                                    ثبت عکس <span>✓</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
     </div>
-
-    <h1>پروفایل من</h1>
-    <hr>
-    <p class="text-center fw-semibold">{{ user.username }} خوش اومدی 👋</p>
-
-    <!-- آکاردئون Bootstrap -->
-    <div class="accordion mt-4" id="profileAccordion">
-        <!-- نوشتن پست جدید -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingPost">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePost">
-                    📝 نوشتن پست جدید
-                </button>
-            </h2>
-            <div id="collapsePost" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
-                <div class="accordion-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" name="submit-post" class="btn btn-custom w-100 mt-2">ارسال</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- پست‌های من -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingPosts">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePosts">
-                    📚 پست‌های من
-                </button>
-            </h2>
-            <div id="collapsePosts" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
-                <div class="accordion-body">
-                    {% if posts %}
-                        <ul class="list-group list-group-flush">
-                            {% for post in posts %}
-                                <li class="list-group-item">
-                                    {% if post.slug %}
-                                        <a href="{% url 'post_detail' post.slug %}" class="text-decoration-none">{{ post.title }}</a>
-                                    {% else %}
-                                        <a href="{% url 'post_detail' post.id %}" class="text-decoration-none">{{ post.title }}</a>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted">هنوز پستی ارسال نکرده‌اید.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- تغییر نام کاربری -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingUsername">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsername">
-                    ✏️ تغییر نام کاربری
-                </button>
-            </h2>
-            <div id="collapseUsername" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
-                <div class="accordion-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">نام کاربری جدید</label>
-                            <input type="text" name="new-username" class="form-control">
-                        </div>
-                        <button type="submit" name="change-username" class="btn btn-custom w-100">تغییر</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- تغییر رمز عبور -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingPassword">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword">
-                    🔒 تغییر رمز عبور
-                </button>
-            </h2>
-            <div id="collapsePassword" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
-                <div class="accordion-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">رمز قدیمی</label>
-                            <input type="password" class="form-control" name="old_password">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">رمز جدید</label>
-                            <input type="password" class="form-control" name="new_password1">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">تکرار رمز جدید</label>
-                            <input type="password" class="form-control" name="new_password2">
-                        </div>
-                        <button type="submit" name="submit_change_password" class="btn btn-custom w-100">تغییر رمز</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- تغییر  عکس پروفایل -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingProfileImage">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfileImage">
-                    📷 تغییر عکس پروفایل
-                </button>
-            </h2>
-            <div id="collapseProfileImage" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
-                <div class="accordion-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            {{ profile_image.as_p }}
-                            <button type="submit" name="set-profile-image">تایید</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const toggles = document.querySelectorAll("[data-profile-toggle]");
+
+    toggles.forEach(function (toggle) {
+        toggle.addEventListener("click", function () {
+            const targetId = toggle.getAttribute("data-profile-toggle");
+            const panel = document.getElementById(targetId);
+
+            if (!panel) return;
+
+            const isOpen = toggle.getAttribute("aria-expanded") === "true";
+
+            // بستن همه بخش‌ها
+            toggles.forEach(function (otherToggle) {
+                const otherPanel = document.getElementById(
+                    otherToggle.getAttribute("data-profile-toggle")
+                );
+
+                otherToggle.setAttribute("aria-expanded", "false");
+                if (otherPanel) otherPanel.hidden = true;
+            });
+
+            // اگر بخش انتخاب‌شده بسته بود، بازش کن
+            if (!isOpen) {
+                toggle.setAttribute("aria-expanded", "true");
+                panel.hidden = false;
+            }
+        });
+    });
+});
+</script>
+
 {% endblock content %}
+```

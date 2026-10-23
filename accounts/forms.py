@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from core.models import Post
 from .models import Contact,Ticket,Reply,CustomUser
+from tinymce.widgets import TinyMCE
 
 User = get_user_model()
 
@@ -25,6 +26,22 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError('پسورد با تکرار آن مطابقت ندارد.')
 
 class CreatePost(forms.ModelForm):
+    text = forms.CharField(
+        widget=TinyMCE(
+            mce_attrs={
+                'height': 450,
+                'directionality': 'rtl',
+                'language': 'fa',
+                'plugins': 'lists link table code',
+                'toolbar': (
+                    'undo redo | blocks | bold italic | '
+                    'alignleft aligncenter alignright alignjustify | '
+                    'bullist numlist | link table | code'
+                ),
+            }
+        )
+    )
+    
     class Meta:
         model = Post
         fields = ['title','text','cover_image','slug']

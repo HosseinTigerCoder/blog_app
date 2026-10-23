@@ -3,21 +3,110 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <style>
-        body {
-            direction: rtl;
-            text-align: right;
-            font-family: tahoma, sans-serif;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت‌نام موفق</title>
 </head>
-<body>
-    {% block subject %}ثبت‌نام موفق{% endblock %}
 
-    {% block html_body %}
-    <h2>سلام {{ username }} 🎉</h2>
-    <p>ایمیل شما: {{ email }}</p>
-    <p>ثبت‌ نام شما با موفقیت انجام شد.</p>
-    {% endblock %}
+<body style="margin: 0; padding: 0; background-color: #f4f2fa; direction: rtl; text-align: right; font-family: Tahoma, Arial, sans-serif;">
+
+{% block subject %}ثبت‌نام موفق{% endblock %}
+
+{% block html_body %}
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+           border="0" style="background-color: #f4f2fa; padding: 35px 12px;">
+        <tr>
+            <td align="center">
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                       border="0" style="max-width: 560px; background-color: #ffffff; border-radius: 18px; overflow: hidden;">
+
+                    <!-- سربرگ -->
+                    <tr>
+                        <td style="background-color: #6550c8; padding: 32px 25px; text-align: center;">
+
+                            <div style="font-size: 38px; line-height: 1.5;">
+                                🎉
+                            </div>
+
+                            <h1 style="margin: 10px 0 0; color: #ffffff; font-size: 24px; line-height: 1.8;">
+                                به جمع ما خوش آمدی!
+                            </h1>
+
+                            <p style="margin: 8px 0 0; color: #e8e2ff; font-size: 13px; line-height: 2;">
+                                ثبت‌نام شما با موفقیت انجام شد.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- محتوای اصلی -->
+                    <tr>
+                        <td style="padding: 32px 28px;">
+
+                            <h2 style="margin: 0 0 18px; color: #28243e; font-size: 20px; line-height: 1.9;">
+                                سلام {{ username }} عزیز 👋
+                            </h2>
+
+                            <p style="margin: 0 0 22px; color: #68657b; font-size: 14px; line-height: 2.3;">
+                                خوشحالیم که به ما پیوستی. حساب کاربری شما با موفقیت ایجاد شده و اکنون می‌توانی از امکانات وب‌سایت استفاده کنی.
+                            </p>
+
+                            <!-- اطلاعات کاربر -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                   border="0" style="background-color: #f8f6ff; border: 1px solid #ebe6ff; border-radius: 12px;">
+
+                                <tr>
+                                    <td style="padding: 17px 18px;">
+
+                                        <p style="margin: 0 0 12px; color: #77728e; font-size: 12px;">
+                                            اطلاعات حساب کاربری
+                                        </p>
+
+                                        <p style="margin: 0 0 12px; color: #302b48; font-size: 14px; line-height: 2;">
+                                            <strong>نام کاربری:</strong>
+                                            {{ username }}
+                                        </p>
+
+                                        <p style="margin: 0; color: #302b48; font-size: 14px; line-height: 2; overflow-wrap: anywhere;">
+                                            <strong>ایمیل:</strong>
+                                            {{ email }}
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <p style="margin: 24px 0 0; color: #68657b; font-size: 13px; line-height: 2.2;">
+                                امیدواریم تجربه خوبی در وب‌سایت ما داشته باشی. از اینکه همراه ما هستی، سپاسگزاریم. 💜
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- پابرگ -->
+                    <tr>
+                        <td style="padding: 20px 24px; background-color: #faf9fd; border-top: 1px solid #efedf5; text-align: center;">
+
+                            <p style="margin: 0; color: #89859b; font-size: 11px; line-height: 2;">
+                                این ایمیل برای اطلاع‌رسانی درباره ثبت‌نام شما ارسال شده است.
+                            </p>
+
+                            <p style="margin: 8px 0 0; color: #6550c8; font-size: 12px; font-weight: bold;">
+                                با آرزوی موفقیت برای شما ✨
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
 </body>
 </html>

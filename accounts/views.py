@@ -87,6 +87,8 @@ def profile_page(request):
                 post.save()
                 messages.success(request,'پست شما ذخیره شد.')
                 return redirect('profile')
+            else:
+                messages.error(request,'خطا')
         elif 'set-profile-image' in request.POST:
             user = request.user
             profile_image = ProfileImage(request.POST,request.FILES,instance=user)

@@ -3,13 +3,15 @@ from . import models
 from django.utils.html import format_html,urlencode
 from django.urls import reverse
 from django.db.models import Count
+from .forms import PostAdminForm
 
 # Register your models here.
 # admin.site.register(models.Post)
 
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title','author_name','slug','comments_count']
+    form = PostAdminForm
+    list_display = ['title','author_name','slug','comments_count','count_views']
     list_filter = ['title']
     list_per_page = 10
     prepopulated_fields = {'slug':['title',]}
@@ -23,7 +25,11 @@ class PostAdmin(admin.ModelAdmin):
     def comments_count(self,post):
         url = (reverse('admin:core_comment_changelist') + '?' + urlencode({'post__id':str(post.id)}))
         return format_html('<a href="{}">{}</a>',url,post.comments_count)
-    
+
+    def count_views(self,post):
+        return post.views
+
+    count_views.short_description = 'تعداد بازدید'
     comments_count.short_description = 'تعداد کامنت ها'    
     author_name.short_description = 'نویسنده'
 

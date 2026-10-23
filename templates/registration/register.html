@@ -1,124 +1,132 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ثبت نام</title>
-    <style>
-        body {
-            font-family: "Vazir", sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            direction: rtl; /* ⬅️ کل صفحه راست‌چین */
-            text-align: right; /* ⬅️ متن‌ها راست‌چین */
-        }
+{% extends 'base_auth.html' %}
+{% load static %}
 
-        .register-container {
-            background-color: #fff;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+{% block title %}ثبت‌نام | وبلاگ من{% endblock title %}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock extra_css %}
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
+{% block content %}
 
-        label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
+<div class="register-page">
 
-        input {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            transition: border-color 0.3s;
-            text-align: right; /* ⬅️ متن داخل input راست‌چین */
-        }
+    <div class="register-background-shape shape-one"></div>
+    <div class="register-background-shape shape-two"></div>
 
-        input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+    <main class="register-wrapper">
 
-        .errorlist {
-            color: #ff4d4f;
-            font-size: 14px;
-            margin: -10px 0 10px 0;
-            list-style: none;
-            padding: 0;
-            text-align: right; /* ⬅️ خطاها راست‌چین */
-        }
+        <!-- بخش معرفی -->
+        <section class="register-intro">
+            <div class="register-logo">
+                <span>✦</span>
+            </div>
 
-        button {
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+            <span class="register-eyebrow">به جمع ما بپیوند</span>
 
-        button:hover {
-            background-color: #0056b3;
-        }
+            <h1>
+                یک شروع تازه،
+                <span>یک مسیر جدید</span>
+            </h1>
 
-        @media (max-width: 500px) {
-            .register-container {
-                padding: 30px 20px;
-            }
-            input, button {
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="register-container">
-        <h2>ثبت نام</h2>
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
+            <p>
+                حساب کاربری خودت رو بساز و برای یادگیری،
+                کشف ایده‌های تازه و پیشرفت آماده شو.
+            </p>
+
+            <div class="register-benefits">
+                <div class="register-benefit">
+                    <span class="benefit-check">✓</span>
+                    <span>ساخت حساب کاربری آسان</span>
+                </div>
+
+                <div class="register-benefit">
+                    <span class="benefit-check">✓</span>
+                    <span>دسترسی به مطالب آموزشی</span>
+                </div>
+
+                <div class="register-benefit">
+                    <span class="benefit-check">✓</span>
+                    <span>همراهی در مسیر یادگیری</span>
+                </div>
+            </div>
+
+            <div class="register-decoration" aria-hidden="true">
+                <span>✧</span>
+                <span>✦</span>
+                <span>✧</span>
+            </div>
+        </section>
+
+        <!-- فرم ثبت‌نام -->
+        <section class="register-card">
+
+            <header class="register-card-header">
+                <span class="register-card-icon">♙</span>
+                <h2>ایجاد حساب کاربری</h2>
+                <p>اطلاعات زیر رو وارد کن تا ثبت‌نامت کامل بشه.</p>
+            </header>
+
+            <form method="post" class="register-form">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="register-errors" role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
                         {% endfor %}
-                    </ul>
+                    </div>
                 {% endif %}
-            {% endfor %}
-            {% if form.non_field_errors %}
-                <ul class="errorlist">
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            <button type="submit">ثبت نام</button>
-        </form>
+
+                {% for field in form %}
+                    <div class="register-field {% if field.errors %}has-error{% endif %}">
+
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span class="required-mark">*</span>
+                            {% endif %}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <div class="field-help">
+                                {{ field.help_text|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <ul class="field-errors" role="alert">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="register-submit">
+                    <span>ایجاد حساب کاربری</span>
+                    <span class="submit-arrow" aria-hidden="true">←</span>
+                </button>
+
+                <p class="register-security">
+                    <span>🔒</span>
+                    اطلاعات شما برای ایجاد حساب کاربری استفاده می‌شود.
+                </p>
+            </form>
+
+        </section>
+
+    </main>
+
+    <div class="register-bottom-note">
+        <span>✦</span>
+        یادگیری، با یک قدم کوچک شروع می‌شه.
     </div>
-</body>
-</html>
+
+</div>
+
+{% endblock content %}

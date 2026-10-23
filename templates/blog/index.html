@@ -1,6 +1,7 @@
 
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}آخرین مقالات | وبلاگ من{% endblock title %}
 
@@ -100,7 +101,7 @@
                             </h3>
 
                             <p class="card-excerpt">
-                                {{ post.text|truncatewords:35 }}
+                                {{ post.text|plain_text|truncatewords:25 }}
                             </p>
 
                             <div class="card-footer">

@@ -26,7 +26,8 @@ admin.site.index_title = 'پنل مدیریت من'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('core.urls')),
-    path('accounts/',include('accounts.urls'))
+    path('accounts/',include('accounts.urls')),
+    path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:
