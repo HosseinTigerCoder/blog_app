@@ -15,17 +15,18 @@
 
 طراحی واکنش‌گرا با HTML، CSS و Bootstrap
 
-
 ⚙️ نحوه اجرا
+
 # 1️⃣ انجام مهاجرت‌های پایگاه داده
+
 python manage.py migrate
 
 # 2️⃣ اجرای سرور محلی
-python manage.py runserver
+
+python manage.py runserver یا pipenv run python manage.py runserver
 
 سپس سایت را در آدرس زیر باز کن:
 👉 http://127.0.0.1:8000/
-
 
 👨‍💻 ساخته شده با
 
@@ -33,4 +34,4 @@ Python 🐍
 
 Django 🧱
 
-HTML / CSS / Bootstrap 🎨
+HTML / CSS 🎨
